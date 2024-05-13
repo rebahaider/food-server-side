@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 require('dotenv').config();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // middlewares
 app.use(cors());
@@ -27,14 +27,42 @@ async function run() {
         await client.connect();
 
         const foodCollection = client.db('foodService').collection('foodItems');
+        const requestFoodCollection = client.db('foodService').collection('requestFoodItems');
 
+        // get all data from mongodb database
         app.get('/foodItems', async (req, res) => {
             const cursor = foodCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
-        
+        // get a single food details
+        app.get('/foodItems/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await foodCollection.findOne(query);
+            res.send(result);
+        })
+
+        // Add Food Items
+        app.post('/foodItems', async (req, res) => {
+            const addFood = req.body;
+            console.log(addFood);
+            const result = await foodCollection.insertOne(addFood)
+            res.send(result);
+        })
+
+        // Add Request Food Items
+        app.post('/requestFoodItems', async (req, res) => {
+            const addRequest = req.body;
+            console.log(addRequest);
+            const result = await requestFoodCollection.insertOne(addRequest);
+            res.send(result);
+        })
+
+
+
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
