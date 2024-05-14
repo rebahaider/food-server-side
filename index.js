@@ -36,6 +36,13 @@ async function run() {
             res.send(result);
         })
 
+        // get requested foods data
+        app.get('/requestFoodItems', async (req, res) => {
+            const cursor = requestFoodCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
         // get a single food details
         app.get('/foodItems/:id', async (req, res) => {
             const id = req.params.id;
@@ -57,6 +64,48 @@ async function run() {
             const addRequest = req.body;
             console.log(addRequest);
             const result = await requestFoodCollection.insertOne(addRequest);
+            res.send(result);
+        })
+
+        app.delete('/requestFoodItems/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await requestFoodCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // update data
+
+        app.get('/requestFoodItems/:id', async (req, res) => {
+
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await requestFoodCollection.findOne(query);
+            res.send(result);
+
+        })
+
+        app.put('/requestFoodItems/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true }
+            const updateFoodDetails = req.body;
+            console.log(updateFoodDetails);
+            const updateDoc = {
+                $set: {
+                    name: updateFoodDetails.name,
+                    image: updateFoodDetails.image,
+                    quantity: updateFoodDetails.quantity,
+                    pickup_location: updateFoodDetails.pickup_location,
+                    expired_date_time: updateFoodDetails.expired_date_time,
+                    additional_notes: updateFoodDetails.additional_notes,
+                    donator_image: updateFoodDetails.donator_image,
+                    donator_name: updateFoodDetails.donator_name,
+                    doner_email: updateFoodDetails.donator_name,
+                    food_status: updateFoodDetails.food_status
+                },
+            };
+            const result = await requestFoodCollection.updateOne(filter, updateDoc, options)
             res.send(result);
         })
 
