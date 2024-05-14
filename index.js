@@ -9,8 +9,8 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://food-client-site.web.app",
-        "https://food-client-site.firebaseapp.com",
+        "https://food-client-site.web.app"
+
     ]
 }));
 app.use(express.json());
