@@ -6,7 +6,13 @@ const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // middlewares
-app.use(cors());
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://food-client-site.web.app",
+        "https://food-client-site.firebaseapp.com",
+    ]
+}));
 app.use(express.json());
 
 
@@ -124,7 +130,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('SIMPLE CRUD IS RUNNING')
+    res.send('Assignment 11 IS RUNNING')
 })
 
 app.listen(port, () => {
